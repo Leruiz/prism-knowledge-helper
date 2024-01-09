@@ -1,6 +1,6 @@
 // write the storage in order
 let queue: [string, any][] = [];
-const _set = (key: string, value: any) => {
+export const _set = (key: string, value: any) => {
   return new Promise((resolve) => {
     queue.push([key, value]);
     // TODO: use `chrome.storage.local` instead of `chrome.storage.sync` since the synchronization has an issue.
@@ -17,7 +17,7 @@ const _set = (key: string, value: any) => {
   })
 }
 
-const _get = (key: string) =>
+export const _get = (key: string) =>
   new Promise((resolve) => {
     chrome.storage.local.get([key], function(val: any) {
       const res = val?.[key];

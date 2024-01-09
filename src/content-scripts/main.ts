@@ -1,27 +1,28 @@
-import { createApp } from "vue";
-import ElementPlus from "element-plus";
-import { VueClipboard } from "@soerenmartius/vue3-clipboard";
 import "element-plus/theme-chalk/index.css";
-import { ClickOutside } from "@element-plus/directives";
 
-import { Note } from "@/types/note";
-import { Query } from "@/types/dom";
-import { get } from "@/utils/storage";
-import mitt, { sendEmitAndWait } from "@/utils/mitt";
-import { StorageKeys } from "@/utils/constant";
-import { getUrlQuery, removeUrlPostfix } from "@/utils/utils";
-import Popup from "./renderer/popup/index.vue";
-import { parseRectsAndTextFromSelection } from "./parser/selection-meta";
-import { getFormattedTextFromTextList } from "./parser/text-list";
 import {
-  genHighlightRects,
   boldHighlightGroupRects,
   delHighlightRects,
+  genHighlightRects,
 } from "./renderer/dom/rect";
 import {
   clearLogoIcon,
   genLogoIconAndRegisterClickCb,
 } from "./renderer/dom/logo-icon";
+import { getUrlQuery, removeUrlPostfix } from "@/utils/utils";
+import mitt, { sendEmitAndWait } from "@/utils/mitt";
+
+import { ClickOutside } from "@element-plus/directives";
+import ElementPlus from "element-plus";
+import { Note } from "@/types/note";
+import Popup from "./renderer/index.vue";
+import { Query } from "@/types/dom";
+import { StorageKeys } from "@/utils/constant";
+import { VueClipboard } from "@soerenmartius/vue3-clipboard";
+import { createApp } from "vue";
+import { get } from "@/utils/storage";
+import { getFormattedTextFromTextList } from "./parser/text-list";
+import { parseRectsAndTextFromSelection } from "./parser/selection-meta";
 
 // create vue instance and bind to extension
 const MOUNT_EL_ID = "attonex_clipper";
@@ -42,6 +43,13 @@ const vm = createApp(Popup)
 chrome.runtime.onMessage.addListener((message: any) => {
   if (message.toggleVisible) {
     // open the popup by clicking the extension logo
+    (vm as any).type = "noteBookPage";
+    (vm as any).visible = !(vm as any).visible;
+  }
+
+  if(message.savePage) {
+    // open the popup by clicking the extension logo
+    (vm as any).type = "bookmark";
     (vm as any).visible = !(vm as any).visible;
   }
   if (message.updateStorage) {
@@ -62,6 +70,7 @@ document.addEventListener("mouseup", (e) => {
       // 1. generate the highlight rects dom of selected text and get the `groupId`
       const groupId = genHighlightRects("", rects, async (noteId: string) => {
         await sendEmitAndWait("select-note", noteId);
+        (vm as any).type = "noteBookPage";
         (vm as any).visible = true;
       });
       // 2. take the note into notebook
@@ -71,6 +80,7 @@ document.addEventListener("mouseup", (e) => {
         rects: rects,
       });
       // 3. show the notebook
+      (vm as any).type = "noteBookPage";
       (vm as any).visible = true;
     });
   }
@@ -93,6 +103,7 @@ async function renderNoteHighlightRects() {
     const { id, rects } = note;
     genHighlightRects(id, rects, async (noteId: string) => {
       await sendEmitAndWait("select-note", noteId);
+      (vm as any).type = "noteBookPage";
       (vm as any).visible = true;
     });
   });
@@ -108,6 +119,7 @@ async function initializeExtension() {
   const { noteId = "" } = getUrlQuery(window.location.href) as Query;
   if (noteId) {
     await sendEmitAndWait("select-note", noteId);
+    (vm as any).type = "noteBookPage";
     (vm as any).visible = true;
     boldHighlightGroupRects("", noteId, true);
   }

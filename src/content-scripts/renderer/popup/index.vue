@@ -1,6 +1,5 @@
 <template>
-  <div v-show="visible">
-    <div class="popup-wrapper" :style="wrapperStyle">
+  <div class="popup-wrapper" :style="wrapperStyle">
       <el-tabs v-model="activeTab" :style="tabStyle" class="tab-container">
         <el-tab-pane label="Current Page" :name="tabTypes.notes">
           <NoteBook :expanded="appExpanded" v-clickoutside="handleClickOutside" />
@@ -14,7 +13,6 @@
       
       <Footer :width="appWidth" />
     </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -34,14 +32,22 @@ enum TabType {
     notes = "notes",
     tags = "tags",
 }
-
-
-export default defineComponent({
+export default {
   components: {
     Close,
     NoteBook,
     Footer,
     AllNoteBool
+  },
+  props: {
+    handleClose: {
+      type: Function,
+      default: () => {}
+    },
+    handleClickOutside: {
+      type: Function,
+      default: () => {}
+    }
   },
   setup() {
     const appWidth = ref<AppWidth>(AppWidth.normal);
@@ -69,40 +75,7 @@ export default defineComponent({
         transition: "0.5s",
       };
     });
-
-    const visible = ref(false);
-    const handleClickOutside = () => {
-      visible.value = false;
-    };
-    const handleClose = () => {
-       visible.value = false;
-    }
-
-    // global reading `notes` and `tags` from storage and provide to sub components.
-    const storage = reactive<Storage>({
-      [StorageKeys.notes]: [],
-      [StorageKeys.tags]: [],
-      [StorageKeys.collectedPages]: []
-    });
-
-    const updateStorage = () => {
-      get(StorageKeys.notes).then((res) => {
-        storage.notes = (res as Note[]) || [];
-      });
-      get(StorageKeys.tags).then((res) => {
-        storage.tags = (res as Tag[]) || [];
-      });
-      get(StorageKeys.collectedPages).then((res) => {
-        storage.collectedPages = (res as string[]) || [];
-      });
-    };
-    updateStorage();
-    mitt.on("update-storage", () => {
-      updateStorage();
-    });
-
-    provide("storage", storage);
-
+   
     return {
       activeTab,
       tabTypes,
@@ -111,12 +84,9 @@ export default defineComponent({
       appExpanded,
       appWidth,
       wrapperStyle,
-      visible,
-      handleClickOutside,
-      handleClose,
     };
   },
-});
+}
 </script>
 
 <style lang="less" scoped>

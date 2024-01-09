@@ -7,3 +7,10 @@ export interface Tag {
   isSelect?: boolean; // is the tag is selected or not
   isCreating?: boolean; // is the tag is being created or not
 }
+
+
+export interface TagV2 {
+  id: string;
+  label: string;
+  createTime: number;
+}

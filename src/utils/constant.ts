@@ -2,6 +2,9 @@ export enum StorageKeys {
   notes = "notes",
   tags = "tags",
   collectedPages = "collectedPages",
+
+  pages = "pages",
+  newTags = "newTags",
 }
 
 export const DOMATTR_RECT_GROUP = "note-id";

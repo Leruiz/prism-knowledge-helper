@@ -16,3 +16,20 @@ export interface Oper {
   onClick: () => void;
   isConfirm?: boolean;
 }
+
+export interface SavedPage {
+  title: string;
+  url: string;
+  tagIds: string[];
+  desc: string;
+  createdTime: number;
+  updatedTime: number;
+}
+
+export interface PageNote {
+  id: string;
+  url: string;
+  content: string;
+  createdTime: number;
+  updatedTime: number;
+}
