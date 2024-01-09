@@ -21,6 +21,7 @@ function setHighlightStyle(ele: HTMLElement, rect: Rect) {
   ele.style.background = "rgb(222, 250, 211)";
   ele.style.opacity = "0.5";
   ele.style.content = " ";
+  ele.style.zIndex = "10000";
 }
 
 function findRelatedIds(
