@@ -1,6 +1,6 @@
 
 <template>
-  <div class="tag-list-container">
+  <div class="tag-list-container" :class="className">
     <el-tag
   :key="tag.id"
   v-for="tag in tags"
@@ -19,7 +19,7 @@
   @blur="handleInputConfirm"
 >
 </el-input>
-<el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+<el-button v-if="(!disableEdit) && (!inputVisible)" class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
 
   </div>
 
@@ -39,6 +39,14 @@ import { v4 as uuid } from "uuid";
         onTagsChange: {
             type: Function as PropType<(tags: TagV2[]) => void>,
             default: () => {}
+        },
+        disableEdit: {
+            type: Boolean,
+            default: false
+        },
+        className: {
+            type: String,
+            default: ""
         }
     },
     setup(props, ctx) {

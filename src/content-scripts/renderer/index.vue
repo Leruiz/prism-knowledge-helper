@@ -1,5 +1,5 @@
 <template>
-  <div v-show="visible">
+  <div v-show="visible" v-clickoutside="handleClickOutside">
     <NoteBookPage
       v-if="type === 'noteBookPage'"
      :handleClickOutside="handleClickOutside" 
@@ -9,6 +9,9 @@
       :handleClickOutside="handleClickOutside" 
       :handleClose="handleClose"/>
     <PageNotePopup v-if="type === 'pageNote'"
+    :handleClickOutside="handleClickOutside" 
+      :handleClose="handleClose"/>
+    <HighlightNotePopup v-if="type === 'highlightNote'"
     :handleClickOutside="handleClickOutside" 
       :handleClose="handleClose"/>
   </div>
@@ -26,16 +29,18 @@ import Bookmark from "./bookmark/index.vue"
 import NoteBookPage from "./popup/index.vue"
 import { SavedPage ,PageNote} from "@/types/common";
 import PageNotePopup from "./page-note/index.vue";
+import HighlightNotePopup from "./highlight-note/index.vue";
 
 export default defineComponent({
   components: {
     NoteBookPage,
     Bookmark,
-    PageNotePopup
+    PageNotePopup,
+    HighlightNotePopup
   },
   setup() {
 
-    const type = ref<"bookmark" | "noteBookPage" | "pageNote">("noteBookPage");
+    const type = ref<"bookmark" | "noteBookPage" | "pageNote" | "highlightNote">("noteBookPage");
 
 
     const visible = ref(false);

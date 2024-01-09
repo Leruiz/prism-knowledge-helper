@@ -48,6 +48,12 @@ export default {
     },
   },
   setup(props) {
+    const storage: Storage = inject("storage",{
+        pages: [],
+        newTags: [],
+        pageNotes: []
+      });
+
       const note = ref("");
       const pageTitle = ref(document.title);
       const sentToPrism = ref(false)
@@ -76,6 +82,7 @@ export default {
           updatedTime: Date.now(),
         }
         await _set(StorageKeys.pageNotes, (oldNotes || []).concat(newNote));
+        storage.pageNotes = (oldNotes || []).concat(newNote);
 
         props.handleClose();
       }

@@ -89,7 +89,7 @@ document.addEventListener("mouseup", (e) => {
       // 1. generate the highlight rects dom of selected text and get the `groupId`
       const groupId = genHighlightRects("", rects, async (noteId: string) => {
         await sendEmitAndWait("select-note", noteId);
-        (vm as any).type = "noteBookPage";
+        (vm as any).type = "highlightNote";
         (vm as any).visible = true;
       });
       // 2. take the note into notebook
@@ -99,7 +99,7 @@ document.addEventListener("mouseup", (e) => {
         rects: rects,
       });
       // 3. show the notebook
-      (vm as any).type = "noteBookPage";
+      (vm as any).type = "highlightNote";
       (vm as any).visible = true;
     });
   }
@@ -122,7 +122,7 @@ async function renderNoteHighlightRects() {
     const { id, rects } = note;
     genHighlightRects(id, rects, async (noteId: string) => {
       await sendEmitAndWait("select-note", noteId);
-      (vm as any).type = "noteBookPage";
+      (vm as any).type = "highlightNote";
       (vm as any).visible = true;
     });
   });
@@ -138,7 +138,7 @@ async function initializeExtension() {
   const { noteId = "" } = getUrlQuery(window.location.href) as Query;
   if (noteId) {
     await sendEmitAndWait("select-note", noteId);
-    (vm as any).type = "noteBookPage";
+    (vm as any).type = "highlightNote";
     (vm as any).visible = true;
     boldHighlightGroupRects("", noteId, true);
   }

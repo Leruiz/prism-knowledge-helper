@@ -1,15 +1,15 @@
 <template>
   <div class="popup-wrapper" :style="wrapperStyle">
+    <CommonHeader :handleClose="handleClose"/>
+
       <el-tabs v-model="activeTab" :style="tabStyle" class="tab-container">
         <el-tab-pane label="Current Page" :name="tabTypes.notes">
-          <NoteBook :expanded="appExpanded" v-clickoutside="handleClickOutside" />
+          <CurrentPageNotes :expanded="appExpanded"  />
         </el-tab-pane>
         <el-tab-pane label="All Memories" :name="tabTypes.tags">
-          <AllNoteBool :expanded="appExpanded" v-clickoutside="handleClickOutside"/>
+          <AllNoteBool :expanded="appExpanded"/>
         </el-tab-pane>
       </el-tabs>
-      <el-icon :size="18" class="popup-close" @click="handleClose"><Close /></el-icon>
-
       
       <Footer :width="appWidth" />
     </div>
@@ -18,7 +18,6 @@
 <script lang="ts">
 import { defineComponent, provide, ref, reactive, computed } from "vue";
 import { Close } from "@element-plus/icons";
-import NoteBook from "./note-book/index.vue";
 import Footer from "./footer/index.vue";
 import { Note } from "@/types/note";
 import AllNoteBool from "./note-book/all-notes.vue"
@@ -27,7 +26,8 @@ import { Storage } from "@/types/storage";
 import { get } from "@/utils/storage";
 import mitt from "@/utils/mitt";
 import { StorageKeys, AppWidth } from "@/utils/constant";
-
+import CommonHeader from "../../components/common-header/index.vue";
+import CurrentPageNotes from "./current-page-notes/index.vue";
 enum TabType {
     notes = "notes",
     tags = "tags",
@@ -35,9 +35,10 @@ enum TabType {
 export default {
   components: {
     Close,
-    NoteBook,
+    CurrentPageNotes,
     Footer,
-    AllNoteBool
+    AllNoteBool,
+    CommonHeader
   },
   props: {
     handleClose: {
@@ -62,10 +63,6 @@ export default {
             transition: "0.5s",
         }));
 
-    mitt.on("expand-collapse-app", (e) => {
-      appExpanded.value = e as boolean;
-      appWidth.value = e ? AppWidth.expanded : AppWidth.normal;
-    });
     const wrapperStyle = computed(() => {
       const maxWidth = window.innerWidth * 0.9;
       const width = appWidth.value > maxWidth ? maxWidth : appWidth.value;

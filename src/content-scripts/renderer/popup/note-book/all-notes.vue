@@ -1,17 +1,13 @@
 <template>
   <div class="all-notes-filters">
     <el-input placeholder="Search" class="all-notes-filters__search"></el-input>
-    <div class="all-notes-filters__item">Collected Pages</div>
+    <div class="all-notes-filters__item">Saved Pages</div>
     <div class="all-notes-filters__item">Notes</div>
     <div class="all-notes-filters__item">Tags</div>
   </div>
-  <NoteCard v-for="item in collectedPages" :key="item" :link="item" content=""></NoteCard>
-  <div v-for="comment in comments" :key="comment.id">
-        <SimpleNote
-          :note="comment"
-          :curNoteId="comment.id"
-        />
-        </div>
+  <NoteCard v-for="savedPage in savedPages" :key="savedPage.url" :content="savedPage.title" :createTime="savedPage.updatedTime" hint="Saved Page"/>
+  <NoteCard v-for="pageNt in pageNotes" :key="pageNt.id" :content="pageNt.content" :createTime="pageNt.updatedTime" hint="Page Note" :link="pageNt.url"/>
+
   <NoteList :expanded="expanded"></NoteList>
   <TagBook
     v-show="!!curNoteId"
@@ -31,6 +27,7 @@ import NoteCard from "./note-card.vue"
 import { PREFIX_Page_TAG, PREFIX_Page_COMMENT } from "@/utils/constant";
 import { Note as TNote } from "@/types/note";
 import SimpleNote from "./simple-note.vue"
+import { Storage } from "../../../../types/storage";
 
 export default {
   components: {
@@ -50,18 +47,24 @@ export default {
     const curNoteId = ref("");
 
     const storage: Storage = inject("storage", {
+      pages: [],
+      pageNotes: [],
+
             notes: [],
             tags: [],
-            collectedPages: []
         });
 
       const tags = computed(() => storage.tags);
       const notes = computed(() => storage.notes); 
       const collectedPages = computed(() => storage.collectedPages);
-      const comments = computed(() => {
-            return storage.notes.filter((note: TNote) => note.id.startsWith(PREFIX_Page_COMMENT)).sort((a, b) => b.createTime - a.createTime)
-        })
 
+      const savedPages = computed(() => {
+        return (storage.pages || []);
+      });
+
+      const pageNotes = computed(() => {
+        return (storage.pageNotes || []).filter((note) => note.url === window.location.href);
+      });
 
     mitt.on("open-tag-book", ({ noteId, coor }: any) => {
       if (coor) {
@@ -80,8 +83,9 @@ export default {
       tagBookCoor,
       curNoteId,
       handleCloseTagBook,
-      comments,
+      pageNotes,
       collectedPages,
+      savedPages,
       notes,
       tags
     };

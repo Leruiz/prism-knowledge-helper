@@ -3,11 +3,8 @@
     <CommonHeader :handleClose="handleClose"/>
 
     <div class="bookmark-body">
-      <div class="bookmark-title">
-        <el-icon :size="20"><Link /></el-icon>
-        <div class="bookmark-title__text">{{ pageTitle }}</div>
-      </div>
-      <el-input class="bookmark-hint" v-model="desc" placeholder="Add description ..."/>
+      <PageTitle/>
+      <!-- <el-input class="bookmark-hint" v-model="desc" placeholder="Add description ..."/> -->
       <TagList :tags="tags" :onTagsChange="onTagsChange" />
     </div>
 
@@ -36,12 +33,14 @@ import { v4 as uuid } from "uuid";
 import { addItemToArr } from "@/utils/storage";
 import { StorageKeys } from "@/utils/constant";
 import { _get, _set } from "../../../utils/storage";
+import PageTitle from "../../components/page-title/index.vue";
 
 export default {
   components: {
     CommonHeader,
     Link,
     TagList,
+    PageTitle
   },
   props: {
     handleClose: {
@@ -107,6 +106,9 @@ export default {
         const newAddedTags = tags.value.filter((tag) => !oldTags.find((oldTag) => oldTag.id === tag.id));
         const newTags = oldTags.concat(newAddedTags);
         await _set(StorageKeys.newTags, newTags);
+
+        storage.pages = newSavedPages;
+        storage.newTags = newTags;
 
         props.handleClose();
       }

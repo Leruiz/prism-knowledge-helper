@@ -15,9 +15,9 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 
 /** Add to context menus */
  chrome.contextMenus.create({
+  id: "prism_knowledge_helper_save_page",
   title: "Save This Page",
   contexts:["all"],  // ContextType
-  id: "prism_knowledge_helper_save_page",
  });
 
  chrome.contextMenus.create({

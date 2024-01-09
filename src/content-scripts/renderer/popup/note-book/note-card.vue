@@ -10,6 +10,10 @@
 
     <!-- opers area -->
     <div class="note-opers" v-if="createTime">
+      <div class="note-time">
+        {{hint}}
+
+      </div>
       <!-- time -->
       <div class="note-time">{{ dayjs.unix(createTime).format("MM/DD HH:mm") }}</div>
     </div>
@@ -52,6 +56,10 @@ export default {
       default: 0,
     },
     link: {
+      type: Object as PropType<string>,
+      default: "",
+    },
+    hint: {
       type: Object as PropType<string>,
       default: "",
     },
