@@ -5,6 +5,7 @@ export enum StorageKeys {
 
   pages = "pages",
   newTags = "newTags",
+  pageNotes = "pageNotes",
 }
 
 export const DOMATTR_RECT_GROUP = "note-id";

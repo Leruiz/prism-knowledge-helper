@@ -8,6 +8,9 @@
       v-if="type === 'bookmark'"
       :handleClickOutside="handleClickOutside" 
       :handleClose="handleClose"/>
+    <PageNotePopup v-if="type === 'pageNote'"
+    :handleClickOutside="handleClickOutside" 
+      :handleClose="handleClose"/>
   </div>
 </template>
 
@@ -21,17 +24,18 @@ import mitt from "@/utils/mitt";
 import { StorageKeys,  } from "@/utils/constant";
 import Bookmark from "./bookmark/index.vue"
 import NoteBookPage from "./popup/index.vue"
-import { SavedPage } from "@/types/common";
-
+import { SavedPage ,PageNote} from "@/types/common";
+import PageNotePopup from "./page-note/index.vue";
 
 export default defineComponent({
   components: {
     NoteBookPage,
     Bookmark,
+    PageNotePopup
   },
   setup() {
 
-    const type = ref<"bookmark" | "noteBookPage">("noteBookPage");
+    const type = ref<"bookmark" | "noteBookPage" | "pageNote">("noteBookPage");
 
 
     const visible = ref(false);
@@ -49,7 +53,8 @@ export default defineComponent({
       [StorageKeys.tags]: [],
       [StorageKeys.collectedPages]: [],
       [StorageKeys.pages]: [],
-      [StorageKeys.newTags]: []
+      [StorageKeys.newTags]: [],
+      [StorageKeys.pageNotes]: []
     });
 
     const updateStorage = () => {
@@ -67,6 +72,9 @@ export default defineComponent({
       });
       get(StorageKeys.newTags).then((res) => {
         storage.newTags = (res as TagV2[]) || [];
+      });
+      get(StorageKeys.pageNotes).then((res) => {
+        storage.pageNotes = (res as PageNote[]) || [];
       });
     };
     updateStorage();

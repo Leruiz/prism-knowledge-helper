@@ -1,7 +1,7 @@
+import { PageNote, SavedPage } from "./common";
 import { Tag, TagV2 } from "./tag";
 
 import { Note } from "./note";
-import { SavedPage } from "./common";
 import { StorageKeys } from "@/utils/constant";
 
 export interface Storage {
@@ -11,6 +11,7 @@ export interface Storage {
 
   [StorageKeys.pages]: SavedPage[];
   [StorageKeys.newTags]: TagV2[];
+  [StorageKeys.pageNotes]: PageNote[];
 
   
 }

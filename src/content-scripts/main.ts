@@ -39,19 +39,38 @@ const vm = createApp(Popup)
   .directive("clickoutside", ClickOutside)
   .mount(mountEl);
 
+  function switchPopupType(newType: string) {
+    if(!(vm as any).visible) {
+      (vm as any).type = newType;
+      (vm as any).visible = true;
+
+      return;
+    }
+
+    if((vm as any).type === newType) {
+      return;
+    }
+
+    (vm as any).visible = false;
+    setTimeout(() => {
+      (vm as any).type = newType;
+      (vm as any).visible = true;
+    }, 0);
+  }
 // listen messages from `background.ts`
 chrome.runtime.onMessage.addListener((message: any) => {
   if (message.toggleVisible) {
-    // open the popup by clicking the extension logo
-    (vm as any).type = "noteBookPage";
-    (vm as any).visible = !(vm as any).visible;
+    switchPopupType("noteBookPage");
   }
 
   if(message.savePage) {
-    // open the popup by clicking the extension logo
-    (vm as any).type = "bookmark";
-    (vm as any).visible = !(vm as any).visible;
+    switchPopupType("bookmark");
   }
+
+  if(message.createPageNote) {
+    switchPopupType("pageNote");
+  }
+
   if (message.updateStorage) {
     // emit to update the storage data by switching tab
     mitt.emit("update-storage");
